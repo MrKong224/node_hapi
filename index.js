@@ -14,55 +14,23 @@ const init = async () => {
       method: 'GET',
       path: '/',
       handler: (request, h) => {
-
           return 'Hello World!';
       }
     });
 
     // Challenges_1
-/*
-    server.route({
-      method: 'GET',
-      path: '/path1',
-      handler: (request, h) => {
-        let newJsonFormat = [];
-
-        // Get keys level by desc
-        const levels = Object.keys(appendix1Input);
-        levels.sort((a, b) => b - a);
-
-        levels.forEach(level => {
-          const parentList = JSON.parse(JSON.stringify(appendix1Input[level]));
-          if (newJsonFormat.length === 0) {
-            newJsonFormat.push(...parentList);
-          } else {   
-            const childrenList = newJsonFormat;
-            childrenList.forEach(child => {
-              const parent = parentList.find(p => p.id === child.parent_id);
-              if (parent) {
-                parent.children.push(child);
-              } else {
-                console.log('!!!! Error not found parent !!!!');
-                console.log('Error data : ', child);
-                throw Boom.badData(`Data id ${child.id} not found parent [patent_id: ${child.parent_id}]. Please check your data`);
-              }
-            })
-            newJsonFormat = parentList;   
-          }
-        })
-
-        return newJsonFormat;
-      }
-    })
-*/
     function validatePayload(payload) {
       let flg = true;
 
-      const levels = Object.keys(payload);
-      levels.sort((a, b) => b - a);
+      const levels = Object.keys(payload).map(lv => +lv);
+
+      if (!levels.includes(0)) {
+        flg = false;
+        return flg;
+      }
 
       for (let i = 0; i < levels.length; i++) {
-        const level = +levels[i];
+        const level = levels[i];
         const dataList = payload[level];
         const incorrectData = dataList.filter(d => d.level !== level);
         if (incorrectData.length > 0) {
@@ -80,18 +48,17 @@ const init = async () => {
   
         const payload = request.payload;
         if (!validatePayload(payload)) {
-          console.log('!!!! Your data is incorrect format !!!!');
+          console.log('!!!! Payload is incorrect format !!!!');
+          console.log(JSON.stringify(payload));
           throw Boom.badData(`Level is incorrect format`);
         }
 
-
         let newJsonFormat = [];
         // Get keys level by desc
-        const levels = Object.keys(payload);
+        const levels = Object.keys(payload).map(lv => +lv);
         levels.sort((a, b) => b - a);
 
-        levels.forEach(lv => {
-          const level = +lv;
+        levels.forEach(level => {
           const parentList = payload[level];
           if (newJsonFormat.length === 0) {
             newJsonFormat.push(...parentList);
