@@ -55,19 +55,43 @@ const init = async () => {
       }
     })
 */
+    function validatePayload(payload) {
+      let flg = true;
+
+      const levels = Object.keys(payload);
+      levels.sort((a, b) => b - a);
+
+      for (let i = 0; i < levels.length; i++) {
+        const level = +levels[i];
+        const dataList = payload[level];
+        const incorrectData = dataList.filter(d => d.level !== level);
+        if (incorrectData.length > 0) {
+          flg = false;
+          break;
+        }
+      }
+      
+      return flg;
+    }
     server.route({
       method: 'POST',
       path: '/path1',
       handler: function (request, h) {
   
         const payload = request.payload;
-        let newJsonFormat = [];
+        if (!validatePayload(payload)) {
+          console.log('!!!! Your data is incorrect format !!!!');
+          throw Boom.badData(`Level is incorrect format`);
+        }
 
+
+        let newJsonFormat = [];
         // Get keys level by desc
         const levels = Object.keys(payload);
         levels.sort((a, b) => b - a);
 
-        levels.forEach(level => {
+        levels.forEach(lv => {
+          const level = +lv;
           const parentList = payload[level];
           if (newJsonFormat.length === 0) {
             newJsonFormat.push(...parentList);
@@ -84,6 +108,15 @@ const init = async () => {
               }
             })
             newJsonFormat = parentList;   
+          }
+
+          if (level === 0) {
+            const cntParentId = parentList.filter(p => !!p.parent_id)
+            if (cntParentId.length > 0) {
+              console.log('!!!! Error root parent is incorrect !!!!');
+              console.log('Error data : ', cntParentId);
+              throw Boom.badData(`There are some data at level 0 is incorrect. Please check your data`);
+            }
           }
         })
 
