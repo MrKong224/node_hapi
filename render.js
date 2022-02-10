@@ -78,9 +78,9 @@ const init = async () => {
             }
             const headerLink = getPageNav(respGithub.headers.link)
             return h.view('./index', {
-              message: respGithub.data.items,
+              searchResult: respGithub.data.items,
+              navigate: headerLink,
               link: respGithub.headers.link,
-              nav: JSON.stringify(headerLink)
             });
           } catch (error) {
             console.log(error.response.data);

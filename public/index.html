@@ -5,26 +5,182 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Github Search Result</title>
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <style>
+    .table {
+      font-size: 11px;
+    }
+    .item-title {
+      font-weight: 600;
+      margin-right: 5px;
+    }
+  </style>
+  
 </head>
 <body>
-  <h1>{{title}}</h1>
-  <hr>
+  <div class="container-fluid">
+    <h1>{{title}}</h1>
+    <hr>
+    <div id="searchResult">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <!-- <th>id/ node_id/ name/ full_name/ private</th> -->
+            <!-- <th>owner</th> -->
+            <th></th>
+            <th></th> 
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each searchResult}}
+          <tr>
+            <td>
+              <div><span class="item-title">id:</span><span>{{id}}</span></div>
+              <div><span class="item-title">node_id:</span><span>{{node_id}}</span></div>
+              <div><span class="item-title">name:</span><span>{{name}}</span></div>
+              <div><span class="item-title">full_name:</span><span>{{full_name}}</span></div>
+              <div><span class="item-title">private:</span><span>{{private}}</span></div>
+              <div><span class="item-title">created_at:</span><span>{{created_at}}</span></div>
+              <div><span class="item-title">updated_at:</span><span>{{updated_at}}</span></div>
+              <div><span class="item-title">pushed_at:</span><span>{{pushed_at}}</span></div>
+              <div><span class="item-title">git_url:</span><span>{{git_url}}</span></div>
+              <div><span class="item-title">ssh_url:</span><span>{{ssh_url}}</span></div>
+              <div><span class="item-title">clone_url:</span><span>{{clone_url}}</span></div>
+              <div><span class="item-title">svn_url:</span><span>{{svn_url}}</span></div>
+              <div><span class="item-title">homepage:</span><span>{{homepage}}</span></div>
+              <div><span class="item-title">size:</span><span>{{size}}</span></div>
+              <div><span class="item-title">stargazers_count:</span><span>{{stargazers_count}}</span></div>
+              <div><span class="item-title">watchers_count:</span><span>{{watchers_count}}</span></div>
+              <div><span class="item-title">language:</span><span>{{language}}</span></div>
+              <div><span class="item-title">has_issues:</span><span>{{has_issues}}</span></div>
+              <div><span class="item-title">has_projects:</span><span>{{has_projects}}</span></div>
+              <div><span class="item-title">has_downloads:</span><span>{{has_downloads}}</span></div>
+              <div><span class="item-title">has_wiki:</span><span>{{has_wiki}}</span></div>
+              <div><span class="item-title">has_pages:</span><span>{{has_pages}}</span></div>
+              <div><span class="item-title">forks_count:</span><span>{{forks_count}}</span></div>
+              <div><span class="item-title">mirror_url:</span><span>{{mirror_url}}</span></div>
+              <div><span class="item-title">archived:</span><span>{{archived}}</span></div>
+              <div><span class="item-title">disabled:</span><span>{{disabled}}</span></div>
+              <div><span class="item-title">open_issues_count:</span><span>{{open_issues_count}}</span></div>
+              <div><span class="item-title">**license:</span><span>{{license}}</span></div>
+              <div><span class="item-title">allow_forking:</span><span>{{allow_forking}}</span></div>
+              <div><span class="item-title">is_template:</span><span>{{is_template}}</span></div>
+              <div><span class="item-title">**topics:</span><span>{{topics}}</span></div>
+              <div><span class="item-title">visibility:</span><span>{{visibility}}</span></div>
+              <div><span class="item-title">forks:</span><span>{{forks}}</span></div>
+              <div><span class="item-title">open_issues:</span><span>{{open_issues}}</span></div>
+              <div><span class="item-title">watchers:</span><span>{{watchers}}</span></div>
+              <div><span class="item-title">default_branch:</span><span>{{default_branch}}</span></div>
+              <div><span class="item-title">score:</span><span>{{score}}</span></div>
+            </td>
+            <td>
+              <div><span class="item-title">login:</span><span>{{owner.login}}</span></div>
+              <div><span class="item-title">id:</span><span>{{owner.id}}</span></div>
+              <div><span class="item-title">node_id:</span><span>{{owner.node_id}}</span></div>
+              <div><span class="item-title">avatar_url:</span><span>{{owner.avatar_url}}</span></div>
+              <div><span class="item-title">gravatar_id:</span><span>{{owner.gravatar_id}}</span></div>
+              <div><span class="item-title">url:</span><span>{{owner.url}}</span></div>
+              <div><span class="item-title">html_url:</span><span>{{owner.html_url}}</span></div>
+              <div><span class="item-title">followers_url:</span><span>{{owner.followers_url}}</span></div>
+              <div><span class="item-title">following_url:</span><span>{{owner.following_url}}</span></div>
+              <div><span class="item-title">gists_url:</span><span>{{owner.gists_url}}</span></div>
+              <div><span class="item-title">starred_url:</span><span>{{owner.starred_url}}</span></div>
+              <div><span class="item-title">subscriptions_url:</span><span>{{owner.subscriptions_url}}</span></div>
+              <div><span class="item-title">organizations_url:</span><span>{{owner.organizations_url}}</span></div>
+              <div><span class="item-title">repos_url:</span><span>{{owner.repos_url}}</span></div>
+              <div><span class="item-title">events_url:</span><span>{{owner.events_url}}</span></div>
+              <div><span class="item-title">received_events_url:</span><span>{{owner.received_events_url}}</span></div>
+              <div><span class="item-title">type:</span><span>{{owner.type}}</span></div>
+              <div><span class="item-title">site_admin:</span><span>{{owner.site_admin}}</span></div>
+            </td>
+            <td>
+              <div><span class="item-title">html_url:</span><span>{{html_url}}</span></div>
+              <div><span class="item-title">description:</span><span>{{description}}</span></div>
+              <div><span class="item-title">fork:</span><span>{{fork}}</span></div>
+              <div><span class="item-title">url:</span><span>{{url}}</span></div>
+              <div><span class="item-title">forks_url:</span><span>{{forks_url}}</span></div>
+              <div><span class="item-title">keys_url:</span><span>{{keys_url}}</span></div>
+              <div><span class="item-title">collaborators_url:</span><span>{{collaborators_url}}</span></div>
+              <div><span class="item-title">teams_url:</span><span>{{teams_url}}</span></div>
+              <div><span class="item-title">hooks_url:</span><span>{{hooks_url}}</span></div>
+              <div><span class="item-title">issue_events_url:</span><span>{{issue_events_url}}</span></div>
+              <div><span class="item-title">events_url:</span><span>{{events_url}}</span></div>
+              <div><span class="item-title">assignees_url:</span><span>{{assignees_url}}</span></div>
+              <div><span class="item-title">branches_url:</span><span>{{branches_url}}</span></div>
+              <div><span class="item-title">tags_url:</span><span>{{tags_url}}</span></div>
+              <div><span class="item-title">blobs_url:</span><span>{{blobs_url}}</span></div>
+              <div><span class="item-title">git_tags_url:</span><span>{{git_tags_url}}</span></div>
+              <div><span class="item-title">git_refs_url:</span><span>{{git_refs_url}}</span></div>
+              <div><span class="item-title">trees_url:</span><span>{{trees_url}}</span></div>
+              <div><span class="item-title">statuses_url:</span><span>{{statuses_url}}</span></div>
+              <div><span class="item-title">languages_url:</span><span>{{languages_url}}</span></div>
+              <div><span class="item-title">stargazers_url:</span><span>{{stargazers_url}}</span></div>
+              <div><span class="item-title">contributors_url:</span><span>{{contributors_url}}</span></div>
+              <div><span class="item-title">subscribers_url:</span><span>{{subscribers_url}}</span></div>
+              <div><span class="item-title">subscription_url:</span><span>{{subscription_url}}</span></div>
+              <div><span class="item-title">commits_url:</span><span>{{commits_url}}</span></div>
+              <div><span class="item-title">git_commits_url:</span><span>{{git_commits_url}}</span></div>
+              <div><span class="item-title">comments_url:</span><span>{{comments_url}}</span></div>
+              <div><span class="item-title">issue_comment_url:</span><span>{{issue_comment_url}}</span></div>
+              <div><span class="item-title">contents_url:</span><span>{{contents_url}}</span></div>
+              <div><span class="item-title">compare_url:</span><span>{{compare_url}}</span></div>
+              <div><span class="item-title">merges_url:</span><span>{{merges_url}}</span></div>
+              <div><span class="item-title">archive_url:</span><span>{{archive_url}}</span></div>
+              <div><span class="item-title">downloads_url:</span><span>{{downloads_url}}</span></div>
+              <div><span class="item-title">issues_url:</span><span>{{issues_url}}</span></div>
+              <div><span class="item-title">pulls_url:</span><span>{{pulls_url}}</span></div>
+              <div><span class="item-title">milestones_url:</span><span>{{milestones_url}}</span></div>
+              <div><span class="item-title">notifications_url:</span><span>{{notifications_url}}</span></div>
+              <div><span class="item-title">labels_url:</span><span>{{labels_url}}</span></div>
+              <div><span class="item-title">releases_url:</span><span>{{releases_url}}</span></div>
+              <div><span class="item-title">deployments_url:</span><span>{{deployments_url}}</span></div>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div id="pageNavigator">
+      {{#if navigate.first}}
+        <a href="http://localhost:8080/page/{{navigate.first}}">First page</a>
+      {{/if}}
+      {{#if navigate.prev}}
+        <a href="http://localhost:8080/page/{{navigate.prev}}">Prev page</a>
+      {{/if}}
+      {{#if navigate.next}}
+        <a href="http://localhost:8080/page/{{navigate.next}}">Next page</a>
+      {{/if}}
+      {{#if navigate.last}}
+        <a href="http://localhost:8080/page/{{navigate.last}}">Last page</a>
+      {{/if}}
+    </div>  
+  </div>
+
+
+
   <hr>
   <div>
     <h2>Data</h2>
     <p>
-      {{message}}
+      {{searchResult}}
     </p>
   </div>
   <hr>
-  <div id="navbar">
+  <div>
     <h2>Navigator</h2>
     <p>{{link}}</p>
-    <p>{{nav}}</p>
   </div>
-  <a href="http://localhost:8080/page/1">First page</a>
-  <a href="http://localhost:8080/page/2">Next page</a>
-  <a href="http://localhost:8080/page/2">Prev page</a>
-  <a href="http://localhost:8080/page/2">Last page</a>
+
+  <!-- Js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 </body>
 </html>
