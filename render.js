@@ -27,14 +27,7 @@ const init = async () => {
       context
     });
 
-    // Routes
-    // server.route({
-    //   method: 'GET',
-    //   path: '/',
-    //   handler: (req, h) => {
-    //     return h.view('index');
-    //   }
-    // });
+    // Path2
     const getPageNav = (headerLink) => {
       let result = { first: null, last: null, next: null, prev: null };
 
@@ -63,7 +56,7 @@ const init = async () => {
     }
     server.route({
         method: 'GET',
-        path: '/page/{page?}',
+        path: '/path2/{page?}',
         handler: async (req, h) => {
           const page = req.params.page || 1;
           try {
