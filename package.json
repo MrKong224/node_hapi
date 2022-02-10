@@ -2,9 +2,9 @@
   "name": "hapi_application",
   "version": "1.0.0",
   "description": "node challenges ",
-  "main": "index.js",
+  "main": "render.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon render.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nuttakorn penchotiros",
@@ -12,7 +12,11 @@
   "dependencies": {
     "@hapi/boom": "^9.1.4",
     "@hapi/hapi": "^20.2.1",
-    "axios": "^0.25.0"
+    "@hapi/inert": "^6.0.5",
+    "@hapi/vision": "^6.1.0",
+    "@hapi/wreck": "^17.1.0",
+    "axios": "^0.25.0",
+    "handlebars": "^4.7.7"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
