@@ -10,12 +10,37 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
   <style>
+    .container-fluid { margin-bottom: 50px; }
+    .cnt-records { text-align: right; }
     .table {
       font-size: 11px;
     }
     .item-title {
       font-weight: 600;
       margin-right: 5px;
+    }
+    .pageNavigator { text-align: left; }
+    .pageNavigator a {
+      font-size: 12px;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 5px;
+    }
+    .pageNavigator a.enable {
+      cursor: pointer;
+      color: #fff;
+      background-color: #1899b9;
+      border: 1px solid #09a5cc;
+    }
+    .pageNavigator a.enable:hover {
+      background-color: #137b96;
+      border: 1px solid #0987a7;
+    }
+    .pageNavigator a.disable {
+      cursor: default !important;
+      color: #fff;
+      background-color: #1899b97c;
+      border: 1px solid #09a5cc7c;
     }
   </style>
   
@@ -25,6 +50,33 @@
     <h1>{{title}}</h1>
     <hr>
     <div id="searchResult">
+      <div class="d-flex justify-content-between">
+        <div id="pageNavigator" class="pageNavigator">
+          {{#if navigate.first}}
+            <a href="http://localhost:8080/page/{{navigate.first}}" class="enable">First page</a>
+            {{else}}
+            <a class="disable">First page</a>
+          {{/if}}
+          {{#if navigate.prev}}
+            <a href="http://localhost:8080/page/{{navigate.prev}}" class="enable">Prev page</a>
+            {{else}}
+            <a class="disable">Prev page</a>
+          {{/if}}
+          {{#if navigate.next}}
+            <a href="http://localhost:8080/page/{{navigate.next}}" class="enable">Next page</a>
+            {{else}}
+            <a class="disable">Next page</a>
+          {{/if}}
+          {{#if navigate.last}}
+            <a href="http://localhost:8080/page/{{navigate.last}}" class="enable">Last page</a>
+            {{else}}
+            <a class="disable">Last page</a>
+          {{/if}}
+        </div> 
+        <div class="cnt-records">
+          {{cntRecords}} records
+        </div>
+      </div>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -68,10 +120,8 @@
               <div><span class="item-title">archived:</span><span>{{archived}}</span></div>
               <div><span class="item-title">disabled:</span><span>{{disabled}}</span></div>
               <div><span class="item-title">open_issues_count:</span><span>{{open_issues_count}}</span></div>
-              <div><span class="item-title">**license:</span><span>{{license}}</span></div>
               <div><span class="item-title">allow_forking:</span><span>{{allow_forking}}</span></div>
               <div><span class="item-title">is_template:</span><span>{{is_template}}</span></div>
-              <div><span class="item-title">**topics:</span><span>{{topics}}</span></div>
               <div><span class="item-title">visibility:</span><span>{{visibility}}</span></div>
               <div><span class="item-title">forks:</span><span>{{forks}}</span></div>
               <div><span class="item-title">open_issues:</span><span>{{open_issues}}</span></div>
@@ -80,24 +130,47 @@
               <div><span class="item-title">score:</span><span>{{score}}</span></div>
             </td>
             <td>
-              <div><span class="item-title">login:</span><span>{{owner.login}}</span></div>
-              <div><span class="item-title">id:</span><span>{{owner.id}}</span></div>
-              <div><span class="item-title">node_id:</span><span>{{owner.node_id}}</span></div>
-              <div><span class="item-title">avatar_url:</span><span>{{owner.avatar_url}}</span></div>
-              <div><span class="item-title">gravatar_id:</span><span>{{owner.gravatar_id}}</span></div>
-              <div><span class="item-title">url:</span><span>{{owner.url}}</span></div>
-              <div><span class="item-title">html_url:</span><span>{{owner.html_url}}</span></div>
-              <div><span class="item-title">followers_url:</span><span>{{owner.followers_url}}</span></div>
-              <div><span class="item-title">following_url:</span><span>{{owner.following_url}}</span></div>
-              <div><span class="item-title">gists_url:</span><span>{{owner.gists_url}}</span></div>
-              <div><span class="item-title">starred_url:</span><span>{{owner.starred_url}}</span></div>
-              <div><span class="item-title">subscriptions_url:</span><span>{{owner.subscriptions_url}}</span></div>
-              <div><span class="item-title">organizations_url:</span><span>{{owner.organizations_url}}</span></div>
-              <div><span class="item-title">repos_url:</span><span>{{owner.repos_url}}</span></div>
-              <div><span class="item-title">events_url:</span><span>{{owner.events_url}}</span></div>
-              <div><span class="item-title">received_events_url:</span><span>{{owner.received_events_url}}</span></div>
-              <div><span class="item-title">type:</span><span>{{owner.type}}</span></div>
-              <div><span class="item-title">site_admin:</span><span>{{owner.site_admin}}</span></div>
+              <div class="item-title">owner:</div>
+              <ul>
+                <li><span class="item-title">login:</span><span>{{owner.login}}</span></li>
+                <li><span class="item-title">id:</span><span>{{owner.id}}</span></li>
+                <li><span class="item-title">node_id:</span><span>{{owner.node_id}}</span></li>
+                <li><span class="item-title">avatar_url:</span><span>{{owner.avatar_url}}</span></li>
+                <li><span class="item-title">gravatar_id:</span><span>{{owner.gravatar_id}}</span></li>
+                <li><span class="item-title">url:</span><span>{{owner.url}}</span></li>
+                <li><span class="item-title">html_url:</span><span>{{owner.html_url}}</span></li>
+                <li><span class="item-title">followers_url:</span><span>{{owner.followers_url}}</span></li>
+                <li><span class="item-title">following_url:</span><span>{{owner.following_url}}</span></li>
+                <li><span class="item-title">gists_url:</span><span>{{owner.gists_url}}</span></li>
+                <li><span class="item-title">starred_url:</span><span>{{owner.starred_url}}</span></li>
+                <li><span class="item-title">subscriptions_url:</span><span>{{owner.subscriptions_url}}</span></li>
+                <li><span class="item-title">organizations_url:</span><span>{{owner.organizations_url}}</span></li>
+                <li><span class="item-title">repos_url:</span><span>{{owner.repos_url}}</span></li>
+                <li><span class="item-title">events_url:</span><span>{{owner.events_url}}</span></li>
+                <li><span class="item-title">received_events_url:</span><span>{{owner.received_events_url}}</span></li>
+                <li><span class="item-title">type:</span><span>{{owner.type}}</span></li>
+                <li><span class="item-title">site_admin:</span><span>{{owner.site_admin}}</span></li>
+              </ul>
+              <div>
+                <div class="item-title">license:</div>
+                <ul>
+                  {{#if license}}
+                    <li><span class="item-title">key:</span><span>{{license.key}}</span></li>
+                    <li><span class="item-title">name:</span><span>{{license.name}}</span></li>
+                    <li><span class="item-title">spdx_id:</span><span>{{license.spdx_id}}</span></li>
+                    <li><span class="item-title">url:</span><span>{{license.url}}</span></li>
+                    <li><span class="item-title">node_id:</span><span>{{license.node_id}}</span></li>
+                    {{/if}}
+                  </ul>
+                </div>
+                <div>
+                  <div class="item-title">topics:</div>
+                  <ul>
+                    {{#each topics}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+              </div>
             </td>
             <td>
               <div><span class="item-title">html_url:</span><span>{{html_url}}</span></div>
@@ -148,36 +221,30 @@
         </tbody>
       </table>
     </div>
-    <div id="pageNavigator">
+    <div id="pageNavigator" class="pageNavigator">
       {{#if navigate.first}}
-        <a href="http://localhost:8080/page/{{navigate.first}}">First page</a>
+        <a href="http://localhost:8080/page/{{navigate.first}}" class="enable">First page</a>
+        {{else}}
+        <a class="disable">First page</a>
       {{/if}}
       {{#if navigate.prev}}
-        <a href="http://localhost:8080/page/{{navigate.prev}}">Prev page</a>
+        <a href="http://localhost:8080/page/{{navigate.prev}}" class="enable">Prev page</a>
+        {{else}}
+        <a class="disable">Prev page</a>
       {{/if}}
       {{#if navigate.next}}
-        <a href="http://localhost:8080/page/{{navigate.next}}">Next page</a>
+        <a href="http://localhost:8080/page/{{navigate.next}}" class="enable">Next page</a>
+        {{else}}
+        <a class="disable">Next page</a>
       {{/if}}
       {{#if navigate.last}}
-        <a href="http://localhost:8080/page/{{navigate.last}}">Last page</a>
+        <a href="http://localhost:8080/page/{{navigate.last}}" class="enable">Last page</a>
+        {{else}}
+        <a class="disable">Last page</a>
       {{/if}}
     </div>  
   </div>
 
-
-
-  <hr>
-  <div>
-    <h2>Data</h2>
-    <p>
-      {{searchResult}}
-    </p>
-  </div>
-  <hr>
-  <div>
-    <h2>Navigator</h2>
-    <p>{{link}}</p>
-  </div>
 
   <!-- Js -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
