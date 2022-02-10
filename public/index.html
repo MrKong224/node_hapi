@@ -42,6 +42,7 @@
       background-color: #1899b97c;
       border: 1px solid #09a5cc7c;
     }
+    .cnt-records { font-size: 11px; }
   </style>
   
 </head>
@@ -74,7 +75,12 @@
           {{/if}}
         </div> 
         <div class="cnt-records">
-          {{cntRecords}} records
+          <div>
+            Page: {{curPage}}
+          </div>
+          <div>
+            {{cntRecords}} records
+          </div>
         </div>
       </div>
       <table class="table table-striped">

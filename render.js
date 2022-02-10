@@ -145,6 +145,7 @@ const init = async () => {
             }
             const headerLink = getPageNav(respGithub.headers.link)
             return h.view('./index', {
+              curPage: page,
               cntRecords: respGithub.data.items.length,
               searchResult: respGithub.data.items,
               navigate: headerLink,
