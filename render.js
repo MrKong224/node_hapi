@@ -11,6 +11,9 @@ const server = Hapi.server({
 
 const init = async () => {
 
+    // Register
+    await server.register(require('@hapi/vision'));
+
     // Path1
     function validatePayload(payload) {
       let flg = true;
@@ -87,9 +90,6 @@ const init = async () => {
     });
 
     // Path2
-    // Register
-    await server.register(require('@hapi/vision'));
-
     // Config render html path
     const context = {
       title: 'Github search result'
