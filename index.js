@@ -50,6 +50,14 @@ const init = async () => {
     context
   });
 
+  handlebars.registerHelper('ifObject', function (aString, options) {
+    if(typeof aString === "object") {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
+  })
+
   // Testing
   server.route(routes);
 

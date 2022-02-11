@@ -12,7 +12,6 @@ const getPageNav = (headerLink) => {
     const relType = urlLink[1];
 
     // find page number
-    // TODO Substring only 1 digit.
     const pageNumber = urlLink[0].substring(urlLink[0].indexOf('&page=') + 6, urlLink[0].length - 1)
 
     // Set result value
@@ -61,10 +60,12 @@ module.exports = {
           console.log('Error data : ', respGithub.statusText);
           throw Boom.badData(respGithub);
         }
+        
         const headerLink = getPageNav(respGithub.headers.link)
         return h.view('./index', {
           curPage: pageNo,
           cntRecords: respGithub.data.items.length,
+          tableHeader: Object.keys(respGithub.data.items[0]),
           searchResult: respGithub.data.items,
           navigate: headerLink,
         });

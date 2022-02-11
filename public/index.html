@@ -83,11 +83,44 @@
           </div>
         </div>
       </div>
+
+      <div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              {{#each tableHeader}}
+                <th>{{this}}</th>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each searchResult}}
+              <tr>
+                {{#each this}}
+                  <!-- <td><span class="item-title">{{@key}}:</span><span>{{this}}</span></td> -->
+                  <td>
+                    {{#ifObject this}}
+                      <ul>
+                        {{#each this}}
+                          <li>
+                            <span class="item-title">{{@key}}:</span><span>{{this}}</span>
+                          </li>
+                        {{/each}}
+                      </ul>
+                    {{else}}
+                      {{this}}
+                    {{/ifObject}}
+                  </td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+<!-- 
       <table class="table table-striped">
         <thead>
           <tr>
-            <!-- <th>id/ node_id/ name/ full_name/ private</th> -->
-            <!-- <th>owner</th> -->
             <th></th>
             <th></th> 
             <th></th>
@@ -159,13 +192,11 @@
               </ul>
               <div>
                 <div class="item-title">license:</div>
-                <ul>
-                  {{#if license}}
-                    <li><span class="item-title">key:</span><span>{{license.key}}</span></li>
-                    <li><span class="item-title">name:</span><span>{{license.name}}</span></li>
-                    <li><span class="item-title">spdx_id:</span><span>{{license.spdx_id}}</span></li>
-                    <li><span class="item-title">url:</span><span>{{license.url}}</span></li>
-                    <li><span class="item-title">node_id:</span><span>{{license.node_id}}</span></li>
+                  <ul>
+                    {{#if license}}
+                      {{#each license}}
+                        <li><span class="item-title">{{@key}}:</span><span>{{this}}</span></li>
+                      {{/each}}
                     {{/if}}
                   </ul>
                 </div>
@@ -175,7 +206,7 @@
                     {{#each topics}}
                       <li>{{this}}</li>
                     {{/each}}
-                </ul>
+                  </ul>
               </div>
             </td>
             <td>
@@ -226,6 +257,8 @@
           {{/each}}
         </tbody>
       </table>
+ -->
+
     </div>
     <div id="pageNavigator" class="pageNavigator">
       {{#if navigate.first}}
