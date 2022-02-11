@@ -152,8 +152,13 @@ const init = async () => {
               link: respGithub.headers.link,
             });
           } catch (error) {
-            console.log(error.response.data);
-            throw Boom.badData(JSON.stringify(error.response.data));
+            if (error.code === 'ENOTFOUND') {
+              console.log(error);
+              throw Boom.badData(error.message);
+            } else {
+              console.log(error.response.data);
+              throw Boom.badData(JSON.stringify(error.response.data));
+            }
           }
         }
     });
