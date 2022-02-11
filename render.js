@@ -2,7 +2,13 @@
 
 const Hapi = require('@hapi/hapi');
 const Boom = require('@hapi/boom');
+const handlebars = require('handlebars');
+const Vision = require('@hapi/vision');
+const Inert = require('@hapi/inert');
+const HapiSwagger = require('hapi-swagger');
+const Pack = require('./package');
 const axios = require('axios');
+const Joi = require('joi');
 
 const server = Hapi.server({
     port: 8080,
@@ -11,50 +17,124 @@ const server = Hapi.server({
 
 const init = async () => {
 
-    // Register
-    await server.register(require('@hapi/vision'));
+  // Config Swagger
+  const swaggerOptions = {
+    info: {
+      title: 'Test API Documentation',
+      version: Pack.version,
+    },
+  };
 
-    // Path1
-    function validatePayload(payload) {
-      let flg = true;
+  // Register
+  await server.register([
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions
+    }
+  ]);
 
-      const levels = Object.keys(payload).map(lv => +lv);
-
-      if (!levels.includes(0)) {
-        flg = false;
-        return flg;
-      }
-
-      for (let i = 0; i < levels.length; i++) {
-        const level = levels[i];
-        const dataList = payload[level];
-        const incorrectData = dataList.filter(d => d.level !== level);
-        if (incorrectData.length > 0) {
-          flg = false;
-          break;
+  // Basic route
+  server.route({
+    method: 'GET',
+    path:'/basic/{id}',
+    options: {
+      description: 'Basic route',
+      notes: 'Returns json',
+      tags: ['api'],
+      plugins: {
+        'hapi-swagger': {
+            payloadType: 'form'
+        }
+      },
+      validate: {
+        params: Joi.object({
+            id : Joi.number()
+                    .required()
+                    .description('the id for the test item'),
+        })
+      },
+      handler: async (req, h) => {
+        return {
+          message: `Hello basic route id | ${req.params.id}`
         }
       }
-      
+    }
+  })
+  server.route({
+    method: 'POST',
+    path:'/basic',
+    options: {
+      description: 'Basic route',
+      notes: 'Returns json',
+      tags: ['api'],
+      plugins: {
+        'hapi-swagger': {
+            payloadType: 'form'
+        }
+      },
+      validate: {
+        payload: Joi.object({
+          no: Joi.number().required().description('Test no.')
+        })
+      },
+      handler: async (req, h) => {
+        return req.payload
+      }
+    }
+  })
+
+  // Path1
+  function validatePayload(payload) {
+    let flg = true;
+
+    const levels = Object.keys(payload).map(lv => +lv);
+
+    if (!levels.includes(0)) {
+      flg = false;
       return flg;
     }
-    server.route({
-      method: 'POST',
-      path: '/path1',
-      handler: (req, h) => {
 
+    for (let i = 0; i < levels.length; i++) {
+      const level = levels[i];
+      const dataList = payload[level];
+      const incorrectData = dataList.filter(d => d.level !== level);
+      if (incorrectData.length > 0) {
+        flg = false;
+        break;
+      }
+    }
+    
+    return flg;
+  }
+  server.route({
+    method: 'POST',
+    path: '/path1',
+    options: {
+      description: 'Re-organize json format parent and child',
+      notes: 'Returns correct json format',
+      tags: ['api'],
+      plugins: {
+        'hapi-swagger': {
+            payloadType: 'form'
+        }
+      },
+      handler: async (req, h) => {
+  
         const payload = req.payload;
         if (!validatePayload(payload)) {
           console.log('!!!! Payload is incorrect format !!!!');
           console.log(JSON.stringify(payload));
           throw Boom.badData(`Level is incorrect format`);
         }
-
+  
         let newJsonFormat = [];
-
+  
         // Get keys level and orderby desc
         const levels = Object.keys(payload).map(lv => +lv);
         levels.sort((a, b) => b - a);
-
+  
         levels.forEach(level => {
           const parentList = payload[level];
           if (newJsonFormat.length === 0) {
@@ -73,7 +153,7 @@ const init = async () => {
             })
             newJsonFormat = parentList;   
           }
-
+  
           if (level === 0) {
             const cntParentId = parentList.filter(p => !!p.parent_id)
             if (cntParentId.length > 0) {
@@ -83,60 +163,78 @@ const init = async () => {
             }
           }
         })
-
+  
         return newJsonFormat;
-
+  
       }
-    });
+    },
+  });
 
-    // Path2
-    // Config render html path
-    const context = {
-      title: 'Github search result'
-    };
-    server.views({
-      engines: {
-          html: require('handlebars')
-      },
-      relativeTo: __dirname,
-      path: './public',
-      context
-    });
-    const getPageNav = (headerLink) => {
-      let result = { first: null, last: null, next: null, prev: null };
+  // Path2
+  // Config render html path
+  const context = {
+    title: 'Github search result'
+  };
+  server.views({
+    engines: {
+        html: handlebars
+    },
+    relativeTo: __dirname,
+    path: './public',
+    context
+  });
+  const getPageNav = (headerLink) => {
+    let result = { first: null, last: null, next: null, prev: null };
 
-      const arrayLink = (headerLink).split(',').map(d => d.trim())
-      arrayLink.forEach(link => {
-        const urlLink = link.split(';').map(d => d.trim());
-        
-        // find rel type
-        const relType = urlLink[1];
+    const arrayLink = (headerLink).split(',').map(d => d.trim())
+    arrayLink.forEach(link => {
+      const urlLink = link.split(';').map(d => d.trim());
+      
+      // find rel type
+      const relType = urlLink[1];
 
-        // find page number
-        const pageNumber = urlLink[0].substring(urlLink[0].indexOf('&page=') + 6, urlLink[0].length - 1)
+      // find page number
+      // TODO Substring only 1 digit.
+      const pageNumber = urlLink[0].substring(urlLink[0].indexOf('&page=') + 6, urlLink[0].length - 1)
 
-        // Set result value
-        if (relType === 'rel="first"') {
-          result.first = pageNumber
-        } else if (relType === 'rel="last"') {
-          result.last = pageNumber
-        } else if (relType === 'rel="next"') {
-          result.next = pageNumber
-        } else if (relType === 'rel="prev"') {
-          result.prev = pageNumber
-        }
-      })
-      return result;
-    }
-    server.route({
-        method: 'GET',
-        path: '/path2/{page?}',
+      // Set result value
+      if (relType === 'rel="first"') {
+        result.first = pageNumber
+      } else if (relType === 'rel="last"') {
+        result.last = pageNumber
+      } else if (relType === 'rel="next"') {
+        result.next = pageNumber
+      } else if (relType === 'rel="prev"') {
+        result.prev = pageNumber
+      }
+    })
+    return result;
+  }
+  server.route({
+      method: 'GET',
+      path: '/path2/{pageNo?}',
+      options: {
+        description: 'Github search api',
+        notes: 'Returns html page with result in table',
+        tags: ['api'],
+        plugins: {
+          'hapi-swagger': {
+              payloadType: 'form'
+          }
+        },
+        validate: {
+          params: Joi.object({
+            pageNo : Joi.number()
+                      .required()
+                      .description('the pageNo is for github query param (sample: 1 or 2)'),
+          })
+        },
         handler: async (req, h) => {
-          const page = req.params.page || 1;
+          const pageNo = req.params.pageNo || 1;
           try {
             const respGithub = await axios({
               method: 'GET',
-              url: `https://api.github.com/search/repositories?q=nodejs&per_page=10&page=${page}`,
+              url: `https://api.github.com/search/repositories?q=nodejs&per_page=10&page=${pageNo}`,
             });
             if (respGithub.status !== 200) {
               console.log('!!!! Error during call github api !!!!');
@@ -145,7 +243,7 @@ const init = async () => {
             }
             const headerLink = getPageNav(respGithub.headers.link)
             return h.view('./index', {
-              curPage: page,
+              curPage: pageNo,
               cntRecords: respGithub.data.items.length,
               searchResult: respGithub.data.items,
               navigate: headerLink,
@@ -161,10 +259,17 @@ const init = async () => {
             }
           }
         }
-    });
+      }
+  });
 
+  // Start server
+  try {
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
+  } catch (error) {
+    console.log(err);
+  }
+
 };
 
 process.on('unhandledRejection', (err) => {
