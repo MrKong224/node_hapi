@@ -164,7 +164,7 @@ const init = async () => {
         try {
           const respGithub = await axios({
             method: 'GET',
-            url: `https://api.github.com/search/repositories?aaq=nodejs&per_page=10&page=${page}`,
+            url: `https://api.github.com/search/repositories?q=nodejs&per_page=10&page=${page}`,
           });
           if (respGithub.status !== 200) {
             console.log('!!!! Error during call github api !!!!');
