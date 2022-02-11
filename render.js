@@ -24,6 +24,16 @@ const init = async () => {
     },
   };
 
+  // Register
+  await server.register([
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions
+    }
+  ]);
+
   // Path1
   function validatePayload(payload) {
     let flg = true;
@@ -51,13 +61,10 @@ const init = async () => {
     method: 'POST',
     path: '/path1',
     options: {
+      description: 'Re-organize json format parent and child',
+      notes: 'Returns correct json format',
       tags: ['api'],
-      plugins: {
-        'hapi-swagger': {
-            payloadType: 'json'
-        }
-      },
-      handler: (req, h) => {
+      handler: async (req, h) => {
   
         const payload = req.payload;
         if (!validatePayload(payload)) {
@@ -108,16 +115,6 @@ const init = async () => {
   });
 
   // Path2
-  // Register
-  await server.register([
-    Inert,
-    Vision,
-    {
-      plugin: HapiSwagger,
-      options: swaggerOptions
-    }
-  ]);
-
   // Config render html path
   const context = {
     title: 'Github search result'
