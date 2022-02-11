@@ -21,6 +21,8 @@
     "joi": "^17.6.0"
   },
   "devDependencies": {
+    "@hapi/code": "^8.0.7",
+    "@hapi/lab": "^24.5.1",
     "nodemon": "^2.0.15"
   }
 }
