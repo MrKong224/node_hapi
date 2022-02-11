@@ -17,7 +17,8 @@
     "@hapi/wreck": "^17.1.0",
     "axios": "^0.25.0",
     "handlebars": "^4.7.7",
-    "hapi-swagger": "^14.2.4"
+    "hapi-swagger": "^14.2.4",
+    "joi": "^17.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

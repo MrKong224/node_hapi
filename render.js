@@ -2,12 +2,13 @@
 
 const Hapi = require('@hapi/hapi');
 const Boom = require('@hapi/boom');
-const axios = require('axios');
 const handlebars = require('handlebars');
 const Vision = require('@hapi/vision');
 const Inert = require('@hapi/inert');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
+const axios = require('axios');
+const Joi = require('joi');
 
 const server = Hapi.server({
     port: 8080,
@@ -33,6 +34,56 @@ const init = async () => {
       options: swaggerOptions
     }
   ]);
+
+  // Basic route
+  server.route({
+    method: 'GET',
+    path:'/basic/{id}',
+    options: {
+      description: 'Basic route',
+      notes: 'Returns json',
+      tags: ['api'],
+      plugins: {
+        'hapi-swagger': {
+            payloadType: 'form'
+        }
+      },
+      validate: {
+        params: Joi.object({
+            id : Joi.number()
+                    .required()
+                    .description('the id for the test item'),
+        })
+      },
+      handler: async (req, h) => {
+        return {
+          message: `Hello basic route id | ${req.params.id}`
+        }
+      }
+    }
+  })
+  server.route({
+    method: 'POST',
+    path:'/basic',
+    options: {
+      description: 'Basic route',
+      notes: 'Returns json',
+      tags: ['api'],
+      plugins: {
+        'hapi-swagger': {
+            payloadType: 'form'
+        }
+      },
+      validate: {
+        payload: Joi.object({
+          no: Joi.number().required().description('Test no.')
+        })
+      },
+      handler: async (req, h) => {
+        return req.payload
+      }
+    }
+  })
 
   // Path1
   function validatePayload(payload) {
@@ -64,6 +115,11 @@ const init = async () => {
       description: 'Re-organize json format parent and child',
       notes: 'Returns correct json format',
       tags: ['api'],
+      plugins: {
+        'hapi-swagger': {
+            payloadType: 'form'
+        }
+      },
       handler: async (req, h) => {
   
         const payload = req.payload;
@@ -138,6 +194,7 @@ const init = async () => {
       const relType = urlLink[1];
 
       // find page number
+      // TODO Substring only 1 digit.
       const pageNumber = urlLink[0].substring(urlLink[0].indexOf('&page=') + 6, urlLink[0].length - 1)
 
       // Set result value
@@ -155,34 +212,51 @@ const init = async () => {
   }
   server.route({
       method: 'GET',
-      path: '/path2/{page?}',
-      handler: async (req, h) => {
-        const page = req.params.page || 1;
-        try {
-          const respGithub = await axios({
-            method: 'GET',
-            url: `https://api.github.com/search/repositories?q=nodejs&per_page=10&page=${page}`,
-          });
-          if (respGithub.status !== 200) {
-            console.log('!!!! Error during call github api !!!!');
-            console.log('Error data : ', respGithub.statusText);
-            throw Boom.badData(respGithub);
+      path: '/path2/{pageNo?}',
+      options: {
+        description: 'Github search api',
+        notes: 'Returns html page with result in table',
+        tags: ['api'],
+        plugins: {
+          'hapi-swagger': {
+              payloadType: 'form'
           }
-          const headerLink = getPageNav(respGithub.headers.link)
-          return h.view('./index', {
-            curPage: page,
-            cntRecords: respGithub.data.items.length,
-            searchResult: respGithub.data.items,
-            navigate: headerLink,
-            link: respGithub.headers.link,
-          });
-        } catch (error) {
-          if (error.code === 'ENOTFOUND') {
-            console.log(error);
-            throw Boom.badData(error.message);
-          } else {
-            console.log(error.response.data);
-            throw Boom.badData(JSON.stringify(error.response.data));
+        },
+        validate: {
+          params: Joi.object({
+            pageNo : Joi.number()
+                      .required()
+                      .description('the pageNo is for github query param (sample: 1 or 2)'),
+          })
+        },
+        handler: async (req, h) => {
+          const pageNo = req.params.pageNo || 1;
+          try {
+            const respGithub = await axios({
+              method: 'GET',
+              url: `https://api.github.com/search/repositories?q=nodejs&per_page=10&page=${pageNo}`,
+            });
+            if (respGithub.status !== 200) {
+              console.log('!!!! Error during call github api !!!!');
+              console.log('Error data : ', respGithub.statusText);
+              throw Boom.badData(respGithub);
+            }
+            const headerLink = getPageNav(respGithub.headers.link)
+            return h.view('./index', {
+              curPage: pageNo,
+              cntRecords: respGithub.data.items.length,
+              searchResult: respGithub.data.items,
+              navigate: headerLink,
+              link: respGithub.headers.link,
+            });
+          } catch (error) {
+            if (error.code === 'ENOTFOUND') {
+              console.log(error);
+              throw Boom.badData(error.message);
+            } else {
+              console.log(error.response.data);
+              throw Boom.badData(JSON.stringify(error.response.data));
+            }
           }
         }
       }
