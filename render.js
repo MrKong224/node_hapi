@@ -1,7 +1,7 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-const Boom = require('@hapi/boom');
+
 const handlebars = require('handlebars');
 const Vision = require('@hapi/vision');
 const Inert = require('@hapi/inert');
@@ -86,6 +86,7 @@ const init = async () => {
   })
 
   // Path1
+  /*
   function validatePayload(payload) {
     let flg = true;
 
@@ -169,9 +170,12 @@ const init = async () => {
       }
     },
   });
+  */
 
   // Path2
   // Config render html path
+
+  /*
   const context = {
     title: 'Github search result'
   };
@@ -261,6 +265,8 @@ const init = async () => {
         }
       }
   });
+
+  */
 
   // Start server
   try {

@@ -1,11 +1,16 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-const Boom = require('@hapi/boom');
 const handlebars = require('handlebars');
 const Vision = require('@hapi/vision');
 const Inert = require('@hapi/inert');
 const HapiSwagger = require('hapi-swagger');
+const Pack = require('./package');
+
+// import routes
+const routes = require('./routes/index');
+
+
 
 const server = Hapi.server({
   port: 3000,
@@ -32,25 +37,24 @@ const init = async () => {
     }
   ]);
 
-    // Testing
-    server.route({
-      method: 'GET',
-      path: '/',
-      handler: (request, h) => {
-          return 'Hello World!';
-      }
-    });
-    server.route({
-      method: 'GET',
-      path:'/index/{page?}',
-      handler: (request, h) => {
-        console.log(request.params.page)
-        return h.file('./public/index.html')
-      }
-    })
+  // View config
+  const context = {
+    title: 'Github search result'
+  };
+  server.views({
+    engines: {
+        html: handlebars
+    },
+    relativeTo: __dirname,
+    path: './public',
+    context
+  });
 
-    await server.start();
-    console.log('Server running on %s', server.info.uri);
+  // Testing
+  server.route(routes);
+
+  await server.start();
+  console.log('Server running on %s', server.info.uri);
 };
 
 process.on('unhandledRejection', (err) => {
