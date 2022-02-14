@@ -1,5 +1,4 @@
 const { init } = require('../lib/server');
-const basicAPI = require('../routes/basic')
 
 describe('Basic API', () => {
   let server;
@@ -8,23 +7,23 @@ describe('Basic API', () => {
     server = await init();
   });
 
-  it('Respond with string "Hello Hapi"', async () => {
-      const res = await server.inject({
-          method: 'get',
-          url: '/'
-      });
-      expect(res.statusCode).toBe(200);
-      expect(res.result).toBe('Hello Hapi');
-  });
+  // it('Respond with string "Hello Hapi"', async () => {
+  //     const res = await server.inject({
+  //         method: 'get',
+  //         url: '/'
+  //     });
+  //     expect(res.statusCode).toBe(200);
+  //     expect(res.result).toBe('Hello Hapi');
+  // });
 
-  it('Respond with string from payload', async () => {
-    const res = await server.inject({
-      method: 'post',
-      url:'/number',
-      payload: {"a": 1}
-    });
-    expect(res.statusCode).toBe(200);
-  })
+  // it('Respond with string from payload', async () => {
+  //   const res = await server.inject({
+  //     method: 'post',
+  //     url:'/number',
+  //     payload: {"a": 1}
+  //   });
+  //   expect(res.statusCode).toBe(200);
+  // })
 
   const path1JsonTesting = {"0":
   [{"id": 10,
@@ -85,24 +84,4 @@ describe('Basic API', () => {
   afterAll(async () => {
     await server.stop();
   });
-})
-
-// describe('GET /', () => {
-//   let server;
-
-//   beforeEach(async () => {
-//       server = await init();
-//   });
-
-//   afterEach(async () => {
-//       await server.stop();
-//   });
-
-//   it('responds with 200', async () => {
-//       const res = await server.inject({
-//           method: 'get',
-//           url: '/'
-//       });
-//       expect(res.statusCode).to.equal(200);
-//   });
-// });
+});
