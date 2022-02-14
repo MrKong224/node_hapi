@@ -1,5 +1,4 @@
 const Boom = require('@hapi/boom');
-const Joi = require('joi');
 
 function validatePayload(payload) {
   let flg = true;

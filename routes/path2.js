@@ -1,5 +1,4 @@
 const axios = require('axios');
-const Joi = require('joi');
 
 const getPageNav = (headerLink) => {
   let result = { first: null, last: null, next: null, prev: null };
