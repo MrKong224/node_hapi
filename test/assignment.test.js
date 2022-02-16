@@ -1,4 +1,5 @@
 const { init } = require('../lib/server');
+// const basicAPI = require('./../routes/basic')
 
 describe('Basic API', () => {
   let server;
@@ -6,24 +7,6 @@ describe('Basic API', () => {
   beforeAll(async () => {
     server = await init();
   });
-
-  // it('Respond with string "Hello Hapi"', async () => {
-  //     const res = await server.inject({
-  //         method: 'get',
-  //         url: '/'
-  //     });
-  //     expect(res.statusCode).toBe(200);
-  //     expect(res.result).toBe('Hello Hapi');
-  // });
-
-  // it('Respond with string from payload', async () => {
-  //   const res = await server.inject({
-  //     method: 'post',
-  //     url:'/number',
-  //     payload: {"a": 1}
-  //   });
-  //   expect(res.statusCode).toBe(200);
-  // })
 
   const path1JsonTesting = {"0":
   [{"id": 10,
